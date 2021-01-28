@@ -7,6 +7,7 @@ const actions = {
   GET: 'get',
   PUSH: 'push',
   PULL: 'pull',
+  PUBLISH: 'publish',
   VERIFY: 'verify'
 }
 
@@ -14,7 +15,7 @@ const aHelp = {
   GET: 'Gets all verified contract from explorers',
   PUSH: 'Push new verified contracts to remote repo',
   PULL: 'Gets all contracts from remote repo',
-  VERIFY: 'Verify contract payload'
+  PUBLISH: 'Publish verifications to explorers'
 }
 
 const isAction = name => {
@@ -49,10 +50,6 @@ async function run (action) {
       case actions.PUSH:
         console.log(action)
         break
-
-      case actions.VERIFY:
-        console.log(action)
-        break
     }
   } catch (err) {
     log.error(err)
@@ -63,14 +60,18 @@ async function run (action) {
 function help () {
   const params = Object.values(actions)
   const max = Math.max(...params.map(p => p.length))
-  console.log(max)
+  console.log()
   cLog.info('Usage:')
   cLog.info(`${process.argv[0]} ${process.argv[1]} [ ${params.join(' | ')} ]`)
   console.log()
   for (const p of params) {
     const key = isAction(p)
     cLog.info(`${p}`)
-    cLog.example(`${line(' ', max + 1)}${aHelp[key]}`)
+    let txt = aHelp[key]
+    if (!Array.isArray(txt)) txt = [txt]
+    for (const t of txt) {
+      cLog.example(`${line(' ', max + 1)}${t}`)
+    }
     console.log()
   }
   process.exit(0)
