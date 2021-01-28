@@ -9,8 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint index.js lib/**",
-    "config": "node lib/showConfig.js",
-    "get": "node index get | npx bunyan"
+    "config": "node src/showConfig.js",
+    "get": "node src/contracts get | npx bunyan"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/rsksmart/rsk-verify-contracts#readme",
   "dependencies": {
+    "@rsksmart/rsk-contract-verifier": "^1.0.1",
     "@rsksmart/rsk-js-cli": "^1.0.0",
+    "@rsksmart/rsk-utils": "^1.1.0",
     "axios": "^0.21.1",
     "bunyan": "^1.8.15"
   },
