@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint":"npx eslint index.js lib/**"
+    "lint":"npx eslint index.js lib/**",
+    "config":"node lib/showConfig.js"
   },
   "repository": {
     "type": "git",
