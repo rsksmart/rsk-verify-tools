@@ -10,7 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint index.js lib/**",
     "config": "node src/showConfig.js",
-    "get": "node src/contracts get | npx bunyan"
+    "get": "node src/contracts get | npx bunyan -o short",
+    "cacheSolc": "node src/cacheSolc.js true | npx bunyan -o short",
+    "verify": "chmod +x scripts/verify-contracts.sh && scripts/verify-contracts.sh"
   },
   "repository": {
     "type": "git",
