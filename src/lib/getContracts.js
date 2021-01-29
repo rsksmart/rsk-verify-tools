@@ -1,16 +1,8 @@
 const config = require('./config')
 const fs = require('fs')
+const { saveFile } = require('./files')
 const log = require('./log')
 const { Explorer } = require('./explorer')
-
-function saveFile (name, content) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(name, content, (err, res) => {
-      if (err) reject(err)
-      else resolve(res)
-    })
-  })
-}
 
 function getContractsDir (chainId) {
   return `${config.out}/${chainId}`

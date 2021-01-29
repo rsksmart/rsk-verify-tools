@@ -1,14 +1,15 @@
-const { readdir, readFile } = require('fs').promises
+const { writeFile, promises } = require('fs')
+const { readdir, readFile } = promises
 const { resolve } = require('path')
 
 async function getFiles (dir) {
   dir = resolve(dir)
-  const ds = await readdir(dir, { withFileTypes: true });
+  const ds = await readdir(dir, { withFileTypes: true })
   const files = await Promise.all(ds.map((d) => {
-    const res = resolve(dir, d.name);
-    return d.isDirectory() ? getFiles(res) : res;
-  }));
-  return Array.prototype.concat(...files);
+    const res = resolve(dir, d.name)
+    return d.isDirectory() ? getFiles(res) : res
+  }))
+  return Array.prototype.concat(...files)
 }
 
 async function getFile (file) {
@@ -22,8 +23,13 @@ async function getFile (file) {
   }
 }
 
-module.exports = { getFiles, getFile }
+function saveFile (name, content) {
+  return new Promise((resolve, reject) => {
+    writeFile(name, content, (err, res) => {
+      if (err) reject(err)
+      else resolve(res)
+    })
+  })
+}
 
-
-
-
+module.exports = { getFiles, getFile, saveFile }
