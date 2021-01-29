@@ -1,7 +1,7 @@
 const config = require('./config')
-const axios = require('axios')
 const fs = require('fs')
 const log = require('./log')
+const { Explorer } = require('./explorer')
 
 function saveFile (name, content) {
   return new Promise((resolve, reject) => {
@@ -10,44 +10,6 @@ function saveFile (name, content) {
       else resolve(res)
     })
   })
-}
-
-async function httpGet (url, payload) {
-  try {
-    let query = '?'
-    for (const p in payload) {
-      if (payload[p]) query += `${p}=${payload[p]}&`
-    }
-    const { data } = await axios.get(url + query)
-    return data
-  } catch (err) {
-    log.error(err.error)
-    return Promise.reject(err.error)
-  }
-}
-
-async function getList (explorerUrl, next, result = []) {
-  const module = 'contractVerifier'
-  const action = 'getVerifiedContracts'
-  const count = !next
-  const { data, pages } = await httpGet(explorerUrl, { module, action, next, count })
-  if (pages.total) log.info(`Contracts ${pages.total}`)
-  result = result.concat(data)
-  if (pages.next) return getList(explorerUrl, pages.next, result)
-  result = [...new Set(result.map(v => v.address))]
-  return result
-}
-
-function getContract (explorerUrl, address) {
-  const module = 'contractVerifier'
-  const action = 'isVerified'
-  return httpGet(explorerUrl, { module, action, address })
-}
-
-function getAddress (explorerUrl, address) {
-  const module = 'addresses'
-  const action = 'getAddress'
-  return httpGet(explorerUrl, { module, action, address })
 }
 
 function getContractsDir (chainId) {
@@ -63,26 +25,26 @@ function contractExists (address, chainId) {
 }
 
 async function saveContract (address, contractData, { net }, creationData) {
-  const { name, settings, version, source, imports, libraries, constructorArguments, bytecode } = contractData
+  const { name, settings, version, source, imports, libraries, constructorArguments, encodedConstructorArguments } = contractData
   const dir = getContractsDir(net.id)
   if (!fs.existsSync(dir)) fs.mkdirSync(dir)
   const file = getContractName(address, net.id)
-  const content = { address, net, name, settings, version, source, imports, libraries, constructorArguments, creationData, bytecode }
+  const content = { address, net, name, settings, version, source, imports, libraries, constructorArguments, encodedConstructorArguments, creationData }
   log.info(`Saving ${file}`)
   await saveFile(file, JSON.stringify(content, null, 4))
 }
 
-async function getContracts (explorer) {
+async function getContracts (url) {
   try {
-    const explorerUrl = `${explorer}/api`
-    const explorerInfo = await httpGet(explorerUrl)
+    const explorer = Explorer(url)
+    const explorerInfo = await explorer.getInfo()
     const { net } = explorerInfo
     log.debug(JSON.stringify(explorerInfo, null, 2))
-    const list = await getList(explorerUrl)
+    const list = await explorer.getList()
     log.info(`Contracts in list: ${list.length}`)
     for (const address of list) {
       if (!contractExists(address, net.id)) {
-        const response = await getAddress(explorerUrl, address).catch(err => log.error(address, err))
+        const response = await explorer.getAddress(address).catch(err => log.error(address, err))
         if (!response) throw new Error(`Empty response for ${address}`)
         const { data: content } = response
         const { verification, destroyedByTx } = content
@@ -107,4 +69,4 @@ async function getContracts (explorer) {
   }
 }
 
-module.exports = { getContracts, getContract, getList }
+module.exports = { getContracts }

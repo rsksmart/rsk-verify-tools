@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/rsksmart/rsk-verify-contracts#readme",
   "dependencies": {
+    "@rsksmart/nod3": "^0.4.1",
+    "@rsksmart/rsk-contract-parser": "0.0.9",
     "@rsksmart/rsk-contract-verifier": "^1.0.1",
     "@rsksmart/rsk-js-cli": "^1.0.0",
     "@rsksmart/rsk-utils": "^1.1.0",

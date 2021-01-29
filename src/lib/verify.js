@@ -1,16 +1,28 @@
 const { verifyParams, Verifier, isVerified } = require('@rsksmart/rsk-contract-verifier')
 const { getFile } = require('./files')
-const { red, green, reset, icons } = require('@rsksmart/rsk-js-cli')
+const { red, green, reset, icons, log } = require('@rsksmart/rsk-js-cli')
 const { isAddress } = require('@rsksmart/rsk-utils')
+const { getBytecodeFromNode, getBytecodeFromExplorer } = require('./getBytecode')
+
+async function getBytecode (address, { id }, { blockNumber }) {
+  const bytecode = await getBytecodeFromNode(address, id, blockNumber)
+    .catch(err => {
+      log.warn(`[${address}] - Node Error: ${err}, getting bytecode from explorer`)
+      return getBytecodeFromExplorer(address, id)
+    })
+  return bytecode
+}
 
 async function verify (file, { fileIndex, files, config } = {}) {
   try {
     let content = await getFile(file)
     content = JSON.parse(content)
-    const { address, name, net } = content
+    const { address, name, net, creationData } = content
     if (!isAddress(address)) throw new Error(`invalid address: ${address}`)
     if (!net || !net.id) throw new Error('Missing net data')
     if (!name) throw new Error('Missing contract name')
+    const bytecode = await getBytecode(address, net, creationData)
+    content.bytecode = bytecode
     const num = (files) ? `${fileIndex}/${files}` : `${fileIndex || ''}`
     let info = num ? `${num} - ` : ''
     info = `${info}${address} @ ${net.id}-${net.name} :: ${name}`
