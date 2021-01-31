@@ -12,11 +12,13 @@ async function getFiles (dir) {
   return Array.prototype.concat(...files)
 }
 
-async function getFile (file) {
+async function getFile (file, jsonParse) {
   try {
-    const content = await readFile(file)
+    let content = await readFile(file)
     if (!content) throw new Error(`The file ${file} is empty`)
-    return content.toString()
+    content = content.toString()
+    if (jsonParse) content = JSON.parse(content)
+    return content
   } catch (err) {
     console.log(file, err)
     return Promise.reject(err)
