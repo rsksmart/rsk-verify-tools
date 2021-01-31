@@ -10,9 +10,19 @@ async function httpGet (url, payload) {
     const { data } = await axios.get(url + query)
     return data
   } catch (err) {
-    log.error(err.error)
+    log.debug(url, payload)
     return Promise.reject(err.error)
   }
 }
 
-module.exports = { httpGet }
+async function httpPost (url, payload) {
+  try {
+    const { data } = await axios.post(url, payload)
+    return data
+  } catch (err) {
+    log.error(err)
+    return Promise.reject(err.error)
+  }
+}
+
+module.exports = { httpGet, httpPost }

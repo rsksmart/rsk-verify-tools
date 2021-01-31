@@ -1,8 +1,8 @@
 const { BcSearch } = require('@rsksmart/rsk-contract-parser')
 const { Nod3 } = require('@rsksmart/nod3')
 const config = require('./config')
-const { getExplorersInfo, Explorer } = require('./explorer')
-const debug = false
+const { ExplorerList } = require('./explorer')
+const debug = process.env.DEBUG
 
 function createSearch (chainId) {
   const url = config.nodes[chainId]
@@ -13,8 +13,9 @@ function createSearch (chainId) {
 
 async function getBytecodeFromNode (address, chainId, blockNumber) {
   try {
-    const { search } = createSearch(chainId)
+    const { search, url } = createSearch(chainId)
     const { tx, internalTx, receipt } = await search.deploymentTx(address, { blockNumber })
+      .catch(error => { throw new Error(`${error} (${url})`) })
     let contractAddress, code
     if (tx && receipt) {
       contractAddress = receipt.contractAddress
@@ -32,9 +33,8 @@ async function getBytecodeFromNode (address, chainId, blockNumber) {
 
 async function getBytecodeFromExplorer (address, chainId) {
   try {
-    const explorers = await getExplorersInfo(config.explorers)
-    const info = explorers.find(({ net }) => net.id === chainId)
-    const explorer = Explorer(info.url)
+    const explorers = await ExplorerList(config)
+    const explorer = explorers[chainId][0]
     const { data } = await explorer.getAddress(address)
     const { deployedCode } = data
     return deployedCode
