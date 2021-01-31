@@ -7,20 +7,30 @@ const { getBytecodeFromNode, getBytecodeFromExplorer } = require('./getBytecode'
 async function getBytecode (address, { id }, { blockNumber }) {
   const bytecode = await getBytecodeFromNode(address, id, blockNumber)
     .catch(err => {
-      log.warn(`[${address}] - Node Error: ${err}, getting bytecode from explorer`)
+      log.warn(`Node Error: ${err}`)
+      log.info(`[${address}] - Getting bytecode from explorer`)
       return getBytecodeFromExplorer(address, id)
     })
   return bytecode
 }
 
-async function verify (file, { fileIndex, files, config } = {}) {
+async function checkPayload (file) {
   try {
-    let content = await getFile(file)
-    content = JSON.parse(content)
-    const { address, name, net, creationData } = content
+    const content = await getFile(file, true)
+    const { address, name, net } = content
     if (!isAddress(address)) throw new Error(`invalid address: ${address}`)
     if (!net || !net.id) throw new Error('Missing net data')
     if (!name) throw new Error('Missing contract name')
+    return content
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+async function verify (file, { fileIndex, files, config } = {}) {
+  try {
+    const content = await checkPayload(file)
+    const { address, name, net, creationData } = content
     const bytecode = await getBytecode(address, net, creationData)
     content.bytecode = bytecode
     const num = (files) ? `${fileIndex}/${files}` : `${fileIndex || ''}`
@@ -54,4 +64,4 @@ async function verifyContract (content, config) {
 function validatePayload (payload) {
 }
 
-module.exports = { verify, verifyContract, validatePayload }
+module.exports = { verify, verifyContract, validatePayload, checkPayload }

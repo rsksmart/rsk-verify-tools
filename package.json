@@ -8,9 +8,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint index.js lib/**",
+    "lint": "npx eslint src/**",
     "config": "node src/showConfig.js",
-    "get": "node src/contracts get | npx bunyan -o short",
+    "get": "node src/get.js | npx bunyan -o short",
+    "publish": "node src/publish.js | npx bunyan -o short",
     "cacheSolc": "node src/cacheSolc.js true | npx bunyan -o short",
     "verify": "chmod +x scripts/verify-contracts.sh && scripts/verify-contracts.sh"
   },

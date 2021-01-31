@@ -61,4 +61,15 @@ async function getContracts (url) {
   }
 }
 
-module.exports = { getContracts }
+async function getAllContracts ({ explorers }) {
+  try {
+    for (const explorer of explorers) {
+      log.info(`Getting data from: ${explorer}`)
+      await getContracts(explorer)
+    }
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+module.exports = { getContracts, getAllContracts }

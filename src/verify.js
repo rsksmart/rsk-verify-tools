@@ -1,4 +1,5 @@
-const { verify } = require('./lib/verify')
+#!/usr/bin/env node
+const { verify } = require('./lib/verifyContracts')
 const { log: cLog } = require('@rsksmart/rsk-js-cli')
 const config = require('./lib/config')
 const file = process.argv[2]
