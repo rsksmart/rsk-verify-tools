@@ -11,7 +11,7 @@ function Explorer (explorerUrl) {
 
   const get = (module, action, params) => httpGet(url, Object.assign(params, { module, action }))
 
-  const post = payload => httpPost(url, payload)
+  const post = (module, action, params, options = {}) => httpPost(url, Object.assign(options, { module, action, params }))
 
   const getInfo = async () => {
     if (info) return info
@@ -20,15 +20,20 @@ function Explorer (explorerUrl) {
     return info
   }
 
-  const getContract = address => get(MODS.verifier, 'isVerified', { address }).catch(() => false)
+  const getContract = address => get(MODS.verifier, 'isVerified', { address })
 
   const getAddress = address => get(MODS.addresses, 'getAddress', { address })
 
-  const verifyContract = request => {
-    return post({ module: MODS.verifier, action: 'verify', params: { request } })
+  const verifyContract = payload => {
+    const { source, imports, libraries, constructorArguments, encodedConstructorArguments, address, settings, version, name } = payload
+    const request = { address, settings, version, name, source, imports, libraries, constructorArguments, encodedConstructorArguments }
+    return post(MODS.verifier, 'verify', { request }, { getDelayed: true })
   }
 
-  const isVerified = getContract
+  const getVerificationResult = id => post(MODS.verifier, 'getVerificationResult', { id })
+
+  const isVerified = address => post(MODS.verifier, 'isVerified', { address, fields: { address: 1, match: 1 } })
+    .catch(() => false)
 
   const getList = async (next, result = []) => {
     const count = !next
@@ -38,7 +43,7 @@ function Explorer (explorerUrl) {
     result = [...new Set(result.map(v => v.address))]
     return result
   }
-  return Object.freeze({ url, get, getInfo, getContract, getAddress, getList, verifyContract, isVerified })
+  return Object.freeze({ url, get, getInfo, getContract, getAddress, getList, verifyContract, isVerified, getVerificationResult })
 }
 
 async function ExplorerList ({ explorers: urls }) {
