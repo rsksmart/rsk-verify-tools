@@ -29,9 +29,9 @@ async function saveContract (address, contractData, { net }, creationData) {
 async function getContracts (url) {
   try {
     const explorer = Explorer(url)
-    const explorerInfo = await explorer.getInfo()
-    const { net } = explorerInfo
-    log.debug(JSON.stringify(explorerInfo, null, 2))
+    const info = await explorer.getInfo()
+    const { net } = info
+    log.trace(JSON.stringify({ url, info }))
     const list = await explorer.getList()
     log.info(`Contracts in list: ${list.length}`)
     for (const address of list) {
@@ -43,7 +43,7 @@ async function getContracts (url) {
         let { hash, transactionHash, blockHash, blockNumber, timestamp } = content.createdByTx
         transactionHash = transactionHash || hash
         if (verification && verification.match) {
-          await saveContract(address, verification.request, explorerInfo, { blockHash, blockNumber, transactionHash, timestamp })
+          await saveContract(address, verification.request, info, { blockHash, blockNumber, transactionHash, timestamp })
         } else {
           if (!destroyedByTx) {
             log.warn(`Missing verification ${address}`)

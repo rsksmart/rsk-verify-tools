@@ -11,7 +11,7 @@ async function httpGet (url, payload) {
     return data
   } catch (err) {
     log.debug(url, payload)
-    return Promise.reject(err.error)
+    return Promise.reject(err)
   }
 }
 
@@ -21,7 +21,7 @@ async function httpPost (url, payload) {
     return data
   } catch (err) {
     log.error(err)
-    return Promise.reject(err.error)
+    return Promise.reject(err)
   }
 }
 

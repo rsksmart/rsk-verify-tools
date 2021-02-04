@@ -14,10 +14,14 @@ function Explorer (explorerUrl) {
   const post = (module, action, params, options = {}) => httpPost(url, Object.assign(options, { module, action, params }))
 
   const getInfo = async () => {
-    if (info) return info
-    info = await httpGet(url)
-    if (!info.net) throw new Error(`Cannot get info from ${url}`)
-    return info
+    try {
+      if (info) return info
+      info = await httpGet(url)
+      if (!info.net) throw new Error(`Cannot get info from ${url}`)
+      return info
+    } catch (err) {
+      return Promise.reject(err)
+    }
   }
 
   const getContract = address => get(MODS.verifier, 'isVerified', { address })
