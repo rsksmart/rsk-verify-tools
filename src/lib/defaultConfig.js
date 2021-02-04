@@ -1,5 +1,3 @@
-const { name } = require('../../package.json')
-
 module.exports = {
   explorers: [
     'https://backend.explorer.rsk.co',
@@ -11,5 +9,5 @@ module.exports = {
   },
   repository: 'https://github.com/rsksmart/rsk-verified-contracts.git',
   log: {},
-  out: `/tmp/${name}-out`
+  out: '/tmp/rsk-tools-out'
 }

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const { getFile, saveFile } = require('./lib/files')
 const { log: cLog } = require('@rsksmart/rsk-js-cli')
 

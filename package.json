@@ -1,7 +1,7 @@
 {
-  "name": "rsk-verify-contracts",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@rsksmart/rsk-verify-tools",
+  "version": "0.0.1",
+  "description": "A set of tools to manage smart contract verifications.",
   "main": "index.js",
   "directories": {
     "lib": "lib"
@@ -12,19 +12,21 @@
     "config": "node src/showConfig.js",
     "get": "node src/get.js | npx bunyan -o short",
     "publish": "node src/publish.js | npx bunyan -o short",
-    "cacheSolc": "node src/cacheSolc.js true | npx bunyan -o short",
-    "verify": "chmod +x scripts/verify-contracts.sh && scripts/verify-contracts.sh"
+    "cache": "node src/cache.js true | npx bunyan -o short",
+    "verify": "chmod +x scripts/verify-contracts.sh && scripts/verify-contracts.sh",
+    "setup": "chmod +x src/*.js && chmod +x scripts/*.sh && chmod"
   },
+  "bin": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rsksmart/rsk-verify-contracts.git"
+    "url": "git+https://github.com/rsksmart/rsk-verify-tools.git"
   },
   "author": "emi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rsksmart/rsk-verify-contracts/issues"
+    "url": "https://github.com/rsksmart/rsk-verify-tools/issues"
   },
-  "homepage": "https://github.com/rsksmart/rsk-verify-contracts#readme",
+  "homepage": "https://github.com/rsksmart/rsk-verify-tools#readme",
   "dependencies": {
     "@rsksmart/nod3": "^0.4.1",
     "@rsksmart/rsk-contract-parser": "0.0.9",

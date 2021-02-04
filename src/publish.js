@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const config = require('./lib/config')
 const { Publisher } = require('./lib/publishContracts')
 const { getArgs, log: cLog, argKey } = require('@rsksmart/rsk-js-cli')

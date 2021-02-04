@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const { cacheSolc } = require('@rsksmart/rsk-contract-verifier')
 const config = require('./lib/config')
 const log = require('./lib/log')
