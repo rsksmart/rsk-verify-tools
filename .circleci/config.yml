@@ -1,0 +1,20 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/tmp
+    parallelism: 1
+    docker:
+      - image: circleci/node:14.15
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            cd ~/tmp/
+            npm install
+
+      - run:
+          name: "Lint"
+          command: |
+            npm run lint
+
