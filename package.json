@@ -1,6 +1,6 @@
 {
   "name": "@rsksmart/rsk-verify-tools",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A set of tools to manage smart contract verifications.",
   "main": "index.js",
   "directories": {
